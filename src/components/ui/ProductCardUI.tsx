@@ -26,10 +26,11 @@ export const ProductCardUI = ({ product }: ProductCardUIProps) => {
   return (
     <HeadlessProductCard product={product}>
       {(logic) => (
-        <Card className="bg-card border-2 border-border hover:border-primary transition-all duration-300 hover:shadow-xl group">
-          <CardContent className="p-4">
+        <Card className="bg-card border-2 border-border hover:border-primary transition-all duration-300 hover:shadow-2xl group overflow-hidden">
+          <CardContent className="p-4 relative">
             <Link to={`/products/${logic.product.slug}`} className="block">
-              <div className="aspect-square bg-muted rounded-lg mb-3 overflow-hidden relative group-hover:scale-105 transition-transform duration-300">
+              <div className="aspect-square bg-gradient-to-br from-muted to-muted/50 rounded-lg mb-3 overflow-hidden relative">
+                <div className="w-full h-full group-hover:scale-110 transition-transform duration-500">
                 {(logic.matchingVariant?.image || (logic.product.images && logic.product.images.length > 0)) ? (
                   <img
                     src={(logic.matchingVariant?.image as any) || logic.product.images![0]}
@@ -60,9 +61,10 @@ export const ProductCardUI = ({ product }: ProductCardUIProps) => {
                     </span>
                   )}
                 </div>
+                </div>
               </div>
 
-              <h3 className="text-foreground font-semibold text-base mb-1 line-clamp-2 group-hover:text-primary transition-colors">
+              <h3 className="text-foreground font-bold text-lg mb-1 line-clamp-2 group-hover:text-primary transition-colors">
                 {logic.product.title}
               </h3>
               {logic.product.description && (
@@ -89,12 +91,14 @@ export const ProductCardUI = ({ product }: ProductCardUIProps) => {
                               type="button"
                               onClick={() => logic.handleOptionChange(opt.name, val)}
                               title={`${opt.name}: ${val}`}
-                              className={`h-6 w-6 rounded-full border ${
-                                logic.selected[opt.name] && !isSelected ? 'opacity-40' : ''
+                              className={`h-7 w-7 rounded-full border-2 transition-all shadow-sm ${
+                                isSelected ? 'scale-110 ring-2 ring-primary ring-offset-2' : ''
+                              } ${
+                                logic.selected[opt.name] && !isSelected ? 'opacity-40' : 'hover:scale-110'
                               }`}
                               style={{ 
                                 backgroundColor: swatch, 
-                                borderColor: '#e5e7eb'
+                                borderColor: isSelected ? 'hsl(var(--primary))' : '#e5e7eb'
                               }}
                               aria-label={`${opt.name}: ${val}`}
                             />
@@ -106,12 +110,12 @@ export const ProductCardUI = ({ product }: ProductCardUIProps) => {
                             key={val}
                             type="button"
                             onClick={() => logic.handleOptionChange(opt.name, val)}
-                            className={`border-2 rounded-md px-2 py-1 text-xs font-medium transition-all ${
+                            className={`border-2 rounded-lg px-3 py-1.5 text-xs font-bold transition-all shadow-sm ${
                               isSelected 
-                                ? 'border-primary bg-primary text-white' 
+                                ? 'gradient-hero text-white border-transparent scale-105 shadow-md' 
                                 : logic.selected[opt.name] && !isSelected
                                   ? 'border-border bg-background text-muted-foreground opacity-40'
-                                  : 'border-border bg-background text-foreground hover:border-primary'
+                                  : 'border-border bg-background text-foreground hover:border-primary hover:scale-105'
                             }`}
                             aria-pressed={isSelected}
                             aria-label={`${opt.name}: ${val}`}
@@ -127,13 +131,13 @@ export const ProductCardUI = ({ product }: ProductCardUIProps) => {
               </div>
             )}
 
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between mt-2">
               <div className="flex flex-col">
-                <span className="text-foreground font-bold text-lg">
+                <span className="text-gradient font-bold text-xl">
                   {logic.formatMoney(logic.currentPrice)}
                 </span>
                 {logic.currentCompareAt && logic.currentCompareAt > logic.currentPrice && (
-                  <span className="text-muted-foreground text-sm line-through">
+                  <span className="text-muted-foreground text-xs line-through">
                     {logic.formatMoney(logic.currentCompareAt)}
                   </span>
                 )}
@@ -146,9 +150,9 @@ export const ProductCardUI = ({ product }: ProductCardUIProps) => {
                   logic.handleAddToCart()
                 }}
                 disabled={!logic.canAddToCart}
-                className="bg-primary hover:bg-primary/90 text-white disabled:opacity-50 transition-all group-hover:scale-105"
+                className="gradient-hero text-white font-bold disabled:opacity-50 transition-all group-hover:scale-110 group-hover:shadow-lg"
               >
-                {logic.inStock ? 'Agregar' : 'Agotado'}
+                {logic.inStock ? '+ Agregar' : 'Agotado'}
               </Button>
             </div>
           </CardContent>
